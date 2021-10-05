@@ -1,12 +1,13 @@
 import socket
-from flask import Flask
+from flask import Flask, render_template
 
 app = Flask(__name__)
+app.config['SECRET_KEY'] = 'LongAndRandomSecretKey'
 
 
 @app.route('/')
-def hello_world():  # put application's code here
-    return 'Hello World!'
+def index():
+    return render_template('index.html')
 
 
 if __name__ == '__main__':
@@ -16,5 +17,12 @@ if __name__ == '__main__':
     free_socket.listen(5)
     free_port = free_socket.getsockname()[1]
     free_socket.close()
+
+    # BLUEPRINTS
+    from users.views import users_blueprint
+    from blog.views import blog_blueprint
+
+    app.register_blueprint(users_blueprint)
+    app.register_blueprint(blog_blueprint)
 
     app.run(host=my_host, port=free_port, debug=True)
